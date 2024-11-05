@@ -9,7 +9,7 @@
 # See the COPYING file for more information.
 ##############################################################################
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.28)
 
 #-----------------------------------------------------------------------------
 # Version
@@ -51,6 +51,12 @@ unset(_version_capi_current)
 unset(_version_capi_major)
 unset(_version_capi_age)
 unset(_version_capi_revision)
+
+#-----------------------------------------------------------------------------
+# externpro
+#-----------------------------------------------------------------------------
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/.devcontainer/cmake)
+include(preproject)
 
 #-----------------------------------------------------------------------------
 # Project
@@ -191,6 +197,15 @@ unset(_cmake_build_type_is_cache)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(flags)
+if(NOT DEFINED XP_NAMESPACE)
+  set(XP_NAMESPACE GEOS)
+  set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+else()
+  set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
+  set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
+  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos TARGETS_FILE geos-targets)
+endif()
 
 #-----------------------------------------------------------------------------
 # C++ language version and compilation flags
@@ -450,13 +465,13 @@ install(TARGETS geos_c
 
 install(EXPORT geos-targets
   FILE geos-targets.cmake
-  NAMESPACE GEOS::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+  NAMESPACE ${XP_NAMESPACE}::
+  DESTINATION ${XP_INSTALL_CMAKEDIR})
 
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config-version.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+  DESTINATION ${XP_INSTALL_CMAKEDIR})
 install(DIRECTORY
   "${CMAKE_CURRENT_LIST_DIR}/include/geos"
   "${CMAKE_CURRENT_BINARY_DIR}/include/geos"
@@ -472,7 +487,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/capi/geos_c.h"
 install(FILES "${CMAKE_CURRENT_LIST_DIR}/include/geos.h"
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-add_subdirectory(tools)
+add_subdirectory(tools ${EXCLUDE_TOOLS})
 
 #-----------------------------------------------------------------------------
 # Uninstall
