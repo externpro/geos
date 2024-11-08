@@ -63,7 +63,7 @@ include(preproject)
 #-----------------------------------------------------------------------------
 
 project(geos
-  VERSION ${GEOS_VERSION_NOPATCH}
+  VERSION ${GEOS_VERSION_NOPATCH}.1
   LANGUAGES C CXX
   DESCRIPTION "GEOS - C++ port of the Java Topology Suite (JTS)"
   HOMEPAGE_URL "https://libgeos.org/"
