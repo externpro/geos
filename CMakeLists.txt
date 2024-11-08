@@ -204,7 +204,7 @@ if(NOT DEFINED XP_NAMESPACE)
 else()
   set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
   set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
-  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos TARGETS_FILE geos-targets)
+  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
 endif()
 
 #-----------------------------------------------------------------------------
