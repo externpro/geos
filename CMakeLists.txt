@@ -210,6 +210,7 @@ else()
   set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
   set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
   callPackageDevel()
+  set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME devel)
 endif()
 
 #-----------------------------------------------------------------------------
