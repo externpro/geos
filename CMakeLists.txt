@@ -200,7 +200,7 @@ include(CMakePackageConfigHelpers)
 include(flags)
 function(callPackageDevel)
   set(CMAKE_PROJECT_NAME geos)
-  set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION}.1) # TODO increment tweak version
+  set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION}.2) # TODO increment tweak version
   xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
 endfunction()
 if(NOT DEFINED XP_NAMESPACE)
