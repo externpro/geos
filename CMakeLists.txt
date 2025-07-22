@@ -9,7 +9,7 @@
 # See the COPYING file for more information.
 ##############################################################################
 
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.31)
 
 #-----------------------------------------------------------------------------
 # Version
@@ -62,8 +62,8 @@ include(preproject)
 # Project
 #-----------------------------------------------------------------------------
 
-project(geos
-  VERSION ${GEOS_VERSION_NOPATCH}.1
+project(GEOS
+  VERSION ${GEOS_VERSION_NOPATCH}
   LANGUAGES C CXX
   DESCRIPTION "GEOS - C++ port of the Java Topology Suite (JTS)"
   HOMEPAGE_URL "https://libgeos.org/"
@@ -198,13 +198,18 @@ unset(_cmake_build_type_is_cache)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(flags)
+function(callPackageDevel)
+  set(CMAKE_PROJECT_NAME geos)
+  set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION}.1) # TODO increment tweak version
+  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
+endfunction()
 if(NOT DEFINED XP_NAMESPACE)
   set(XP_NAMESPACE GEOS)
   set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
 else()
   set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
   set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
-  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
+  callPackageDevel()
 endif()
 
 #-----------------------------------------------------------------------------
