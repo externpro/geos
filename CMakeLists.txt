@@ -55,8 +55,7 @@ unset(_version_capi_revision)
 #-----------------------------------------------------------------------------
 # externpro
 #-----------------------------------------------------------------------------
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/.devcontainer/cmake)
-include(preproject)
+set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
 
 #-----------------------------------------------------------------------------
 # Project
@@ -197,10 +196,9 @@ unset(_cmake_build_type_is_cache)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-include(flags)
+include(xpflags)
 function(callPackageDevel)
   set(CMAKE_PROJECT_NAME geos)
-  set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION}.3) # TODO increment tweak version
   xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
 endfunction()
 if(NOT DEFINED XP_NAMESPACE)
