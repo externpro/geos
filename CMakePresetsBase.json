@@ -11,5 +11,11 @@
         "BUILD_GEOSOP": "OFF"
       }
     }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-base",
+      "hidden": true
+    }
   ]
 }
