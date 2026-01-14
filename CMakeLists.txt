@@ -196,19 +196,25 @@ unset(_cmake_build_type_is_cache)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-include(xpflags)
-function(callPackageDevel)
-  set(CMAKE_PROJECT_NAME geos)
-  xpPackageDevel(LIBRARIES ${XP_NAMESPACE}::geos_c TARGETS_FILE geos-targets)
-endfunction()
-if(NOT DEFINED XP_NAMESPACE)
-  set(XP_NAMESPACE GEOS)
-  set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
-else()
-  set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake)
+
+#-----------------------------------------------------------------------------
+# externpro package and CMake install parameters
+#-----------------------------------------------------------------------------
+
+if(DEFINED XP_NAMESPACE)
+  xpExternPackage(REPO_NAME geos NAMESPACE ${XP_NAMESPACE} ALIAS_NAMESPACE GEOS
+    TARGETS_FILE geos-targets LIBRARIES geos_c
+    BASE ${GEOS_VERSION} XPDIFF "patch"
+    WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
+    DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
+    LICENSE "[LPGL-2.1](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
+    )
+  set(CMAKE_NAMESPACE ${XP_NAMESPACE})
+  set(CMAKE_INSTALL_CMAKEDIR ${XP_INSTALL_CMAKEDIR})
   set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
-  callPackageDevel()
-  set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME devel)
+else()
+  set(CMAKE_NAMESPACE GEOS)
+  set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
 endif()
 
 #-----------------------------------------------------------------------------
@@ -469,13 +475,13 @@ install(TARGETS geos_c
 
 install(EXPORT geos-targets
   FILE geos-targets.cmake
-  NAMESPACE ${XP_NAMESPACE}::
-  DESTINATION ${XP_INSTALL_CMAKEDIR})
+  NAMESPACE ${CMAKE_NAMESPACE}::
+  DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config-version.cmake"
-  DESTINATION ${XP_INSTALL_CMAKEDIR})
+  DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 install(DIRECTORY
   "${CMAKE_CURRENT_LIST_DIR}/include/geos"
   "${CMAKE_CURRENT_BINARY_DIR}/include/geos"

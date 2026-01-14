@@ -149,6 +149,10 @@ public:
 
     static const CoordinateXY& getNull();
 
+#if defined(__GNUC__) && !defined(__clang__) && (__GNUC__ >= 15)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
     double distance(const CoordinateXY& p) const
     {
         double dx = x - p.x;
@@ -162,6 +166,9 @@ public:
         double dy = y - p.y;
         return dx * dx + dy * dy;
     };
+#if defined(__GNUC__) && !defined(__clang__) && (__GNUC__ >= 15)
+#pragma GCC diagnostic pop
+#endif
 
     bool isNull() const
     {
