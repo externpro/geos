@@ -207,7 +207,7 @@ if(DEFINED XP_NAMESPACE)
     BASE ${GEOS_VERSION} XPDIFF "patch"
     WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
     DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
-    LICENSE "[LPGL-2.1](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
+    LICENSE "[LGPL-2.1-only](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
     )
   set(CMAKE_NAMESPACE ${XP_NAMESPACE})
   set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
