@@ -19,16 +19,31 @@ if(NOT CMAKE_REQUIRED_QUIET)
   # CMake 3.17+ use CHECK_START/CHECK_PASS/CHECK_FAIL
   message(STATUS "Checking if compiler supports std::filesystem")
 endif()
-set(_filename "${CMAKE_CURRENT_BINARY_DIR}/has_filesystem.cpp")
-write_file(${_filename} "\
+
+# Special case: gcc9/linux/arm64/c++17 std::filesystem is broken
+# See: https://github.com/externpro/externpro/issues/161
+# Linker error: /opt/rh/gcc-toolset-9/root/usr/bin/ld: bin/Debug/test_geos_unit: hidden symbol `_ZNSt10filesystem9_Dir_base7advanceEbRSt10error_code' isn't defined
+set(HAVE_STD_FILESYSTEM TRUE)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND
+   CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64" AND
+   CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+   CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10")
+  set(HAVE_STD_FILESYSTEM FALSE)
+  if(NOT CMAKE_REQUIRED_QUIET)
+    message(STATUS "Checking if compiler supports std::filesystem - no (gcc9/linux/arm64/c++17 incompatibility)")
+  endif()
+else()
+  set(_filename "${CMAKE_CURRENT_BINARY_DIR}/has_filesystem.cpp")
+  write_file(${_filename} "\
 #include <filesystem>
 int main() {
   std::filesystem::path pth {\"../\"};
   return 0;
 }")
-try_compile(HAVE_STD_FILESYSTEM "${CMAKE_BINARY_DIR}/temp" "${_filename}")
-file(REMOVE "${_filename}")
-unset(_filename)
+  try_compile(HAVE_STD_FILESYSTEM "${CMAKE_BINARY_DIR}/temp" "${_filename}")
+  file(REMOVE "${_filename}")
+  unset(_filename)
+endif()
 if(HAVE_STD_FILESYSTEM)
   if(NOT CMAKE_REQUIRED_QUIET)
     # CMake 3.17+ use CHECK_START/CHECK_PASS/CHECK_FAIL
