@@ -31,6 +31,7 @@ env:
 jobs:
   linux:
     name: 'Linux'
+    if: github.repository == 'libgeos/geos'
     strategy:
       fail-fast: false
       matrix:
@@ -265,6 +266,7 @@ jobs:
 
   windows-mingw:
     name: 'Windows (mingw-w64, x86_64, windows-2022)'
+    if: github.repository == 'libgeos/geos'
     runs-on: windows-2022
     defaults:
       run:
@@ -324,6 +326,7 @@ jobs:
 
   windows-msvc-msbuild:
     name: Windows (MSVC MSBuild)
+    if: github.repository == 'libgeos/geos'
     runs-on: windows-2022
     steps:
     - name: 'Check Out'
@@ -352,6 +355,7 @@ jobs:
 
   windows-msvc-ninja:
     name: Windows (MSVC Ninja)
+    if: github.repository == 'libgeos/geos'
     strategy:
       fail-fast: false
       matrix:
@@ -417,6 +421,7 @@ jobs:
 
   macos:
     name: 'macOS clang'
+    if: github.repository == 'libgeos/geos'
     strategy:
       fail-fast: false
       matrix:
@@ -484,6 +489,7 @@ jobs:
 
   code-quality:
     name: Code quality checks
+    if: github.repository == 'libgeos/geos'
     runs-on: ubuntu-latest
     steps:
     - name: Install
@@ -505,6 +511,7 @@ jobs:
 
   cmake-subproject:
     name: 'CMake Subproject'
+    if: github.repository == 'libgeos/geos'
     runs-on: ubuntu-latest
     steps:
     - name: 'Install'
