@@ -9,7 +9,7 @@
 # See the COPYING file for more information.
 ##############################################################################
 
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 4.3)
 
 #-----------------------------------------------------------------------------
 # Version
@@ -51,11 +51,6 @@ unset(_version_capi_current)
 unset(_version_capi_major)
 unset(_version_capi_age)
 unset(_version_capi_revision)
-
-#-----------------------------------------------------------------------------
-# externpro
-#-----------------------------------------------------------------------------
-set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
 
 #-----------------------------------------------------------------------------
 # Project
@@ -196,25 +191,6 @@ unset(_cmake_build_type_is_cache)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-
-#-----------------------------------------------------------------------------
-# externpro package and CMake install parameters
-#-----------------------------------------------------------------------------
-
-if(DEFINED XP_NAMESPACE)
-  xpExternPackage(REPO_NAME geos NAMESPACE ${XP_NAMESPACE} ALIAS_NAMESPACE GEOS
-    TARGETS_FILE geos-targets LIBRARIES geos_c
-    BASE ${GEOS_VERSION} XPDIFF "patch"
-    WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
-    DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
-    LICENSE "[LGPL-2.1-only](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
-    )
-  set(CMAKE_NAMESPACE ${XP_NAMESPACE})
-  set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
-else()
-  set(CMAKE_NAMESPACE GEOS)
-  set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
-endif()
 
 #-----------------------------------------------------------------------------
 # C++ language version and compilation flags
@@ -444,6 +420,25 @@ if(PROJECT_IS_TOP_LEVEL AND BUILD_WEBSITE)
 endif()
 
 #-----------------------------------------------------------------------------
+# externpro package and CMake install parameters
+#-----------------------------------------------------------------------------
+
+if(COMMAND xpExternPackage)
+  xpExternPackage(REPO_NAME geos TARGETS_FILE geos-targets NO_EXPORT
+    LIBRARIES geos_c CREATE_ALIASES ALIAS_NAMESPACE GEOS
+    BASE ${GEOS_VERSION} XPDIFF "patch"
+    WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
+    DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
+    LICENSE "[LGPL-2.1-only](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
+    )
+  set(CMAKE_NAMESPACE geos)
+  set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
+else()
+  set(CMAKE_NAMESPACE GEOS)
+  set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+endif()
+
+#-----------------------------------------------------------------------------
 # Install and export targets - support 'make install' or equivalent
 #-----------------------------------------------------------------------------
 
@@ -453,7 +448,7 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion)
 
 configure_file(cmake/geos-config.cmake
-  "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/geos-config-orig.cmake"
   COPYONLY)
 
 install(TARGETS geos geos_cxx_flags
@@ -478,7 +473,7 @@ install(EXPORT geos-targets
   DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/geos-config-orig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config-version.cmake"
   DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 install(DIRECTORY

@@ -6,7 +6,6 @@
       "hidden": true,
       "binaryDir": "${sourceDir}/_bld-${presetName}",
       "cacheVariables": {
-        "XP_NAMESPACE": "xpro",
         "BUILD_SHARED_LIBS": "OFF",
         "BUILD_GEOSOP": "OFF"
       }
