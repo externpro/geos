@@ -38,3 +38,7 @@ capi/geos_c.h
 .ccache/
 web/public/
 *.code-workspace
+# externpro
+.env
+_bld*/
+docker-compose.override.yml
