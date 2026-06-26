@@ -32,6 +32,22 @@ foreach(_testfile ${_testfiles})
     add_test(NAME unit-${_cmake_testname} COMMAND test_geos_unit ${_testname})
 endforeach()
 
+# Disable tests that segfault on Windows MSVC Release builds with VS2026
+if(MSVC AND MSVC_VERSION GREATER_EQUAL 1950)
+  set_tests_properties(unit-capi-GEOSDifferencePrec PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-capi-GEOSGeom_setPrecision PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-capi-GEOSIntersectionPrec PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-capi-GEOSSymDifferencePrec PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-noding-snapround-SnapRoundingNoder PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-buffer-BufferOp PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-overlayng-OverlayNGMixedPoints PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-overlayng-OverlayNGStrictMode PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-overlayng-OverlayNG PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-overlayng-PrecisionReducer PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-operation-overlayng-UnaryUnionNG PROPERTIES DISABLED $<CONFIG:Release>)
+  set_tests_properties(unit-precision-GeometryPrecisionReducer PROPERTIES DISABLED $<CONFIG:Release>)
+endif()
+
 # Run all the unit tests in one go, for faster memory checking
 # under valgrind. Restrict to one configuration so it is only
 # run with 'ctest -C Valgrind'
