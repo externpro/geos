@@ -9,7 +9,7 @@
 # See the COPYING file for more information.
 ##############################################################################
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 4.3)
 
 #-----------------------------------------------------------------------------
 # Version
@@ -420,11 +420,30 @@ if(PROJECT_IS_TOP_LEVEL AND BUILD_WEBSITE)
 endif()
 
 #-----------------------------------------------------------------------------
+# externpro package and CMake install parameters
+#-----------------------------------------------------------------------------
+
+if(COMMAND xpExternPackage)
+  xpExternPackage(REPO_NAME geos TARGETS_FILE geos-targets NO_EXPORT
+    LIBRARIES geos_c CREATE_ALIASES ALIAS_NAMESPACE GEOS
+    BASE ${GEOS_VERSION} XPDIFF "patch"
+    WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
+    DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
+    LICENSE "[LGPL-2.1-only](https://trac.osgeo.org/geos/ 'LGPL version 2.1')"
+    )
+  set(CMAKE_NAMESPACE geos)
+  set(EXCLUDE_TOOLS EXCLUDE_FROM_ALL)
+else()
+  set(CMAKE_NAMESPACE GEOS)
+  set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+endif()
+
+#-----------------------------------------------------------------------------
 # Generate targets file for importing directly from GEOS build tree
 #-----------------------------------------------------------------------------
 
 export(TARGETS ryu geos geos_c geos_cxx_flags geos_developer_cxx_flags
-       NAMESPACE GEOS::
+       NAMESPACE ${CMAKE_NAMESPACE}::
        FILE "geos-targets.cmake")
 
 #-----------------------------------------------------------------------------
@@ -437,7 +456,7 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/geos-config.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/geos-config-orig.cmake"
   COPYONLY)
 
 install(TARGETS geos geos_cxx_flags
@@ -458,13 +477,13 @@ install(TARGETS geos_c
 
 install(EXPORT geos-targets
   FILE geos-targets.cmake
-  NAMESPACE GEOS::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+  NAMESPACE ${CMAKE_NAMESPACE}::
+  DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/geos-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/geos-config-orig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/geos-config-version.cmake"
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GEOS)
+  DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 install(DIRECTORY
   "${CMAKE_CURRENT_LIST_DIR}/include/geos"
   "${CMAKE_CURRENT_BINARY_DIR}/include/geos"
@@ -480,7 +499,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/capi/geos_c.h"
 install(FILES "${CMAKE_CURRENT_LIST_DIR}/include/geos.h"
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-add_subdirectory(tools)
+add_subdirectory(tools ${EXCLUDE_TOOLS})
 
 #-----------------------------------------------------------------------------
 # Uninstall
