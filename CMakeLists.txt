@@ -425,7 +425,7 @@ endif()
 
 if(COMMAND xpExternPackage)
   xpExternPackage(REPO_NAME geos TARGETS_FILE geos-targets NO_EXPORT
-    LIBRARIES geos_c CREATE_ALIASES ALIAS_NAMESPACE GEOS
+    LIBRARIES geos_c ALIAS_NAMESPACE GEOS
     BASE ${GEOS_VERSION} XPDIFF "patch"
     WEB "https://libgeos.org" UPSTREAM "github.com/libgeos/geos"
     DESC "C/C++ library for computational geometry with a focus on algorithms used in geographic information systems (GIS) software"
